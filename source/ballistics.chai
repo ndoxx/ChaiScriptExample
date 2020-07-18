@@ -1,0 +1,20 @@
+def update(EntityID e, float dt)
+{
+    var g  = 9.81;
+    var drag_coeff = 0.1;
+
+    auto& ct = Scene.get_transform(e);
+    auto& cr = Scene.get_rigid(e);
+
+    // Total acceleration, taking gravity and friction into account
+    var gravity = vec2(0, -g);
+    var drag = vec2(0);
+    if(length(cr.speed)>0)
+    {
+        drag = -drag_coeff*length2(cr.speed)*normalize(cr.speed);
+    }
+    var accel = cr.acceleration + gravity + drag;
+
+    cr.speed += accel * dt;
+    ct.position += cr.speed * dt;
+}
