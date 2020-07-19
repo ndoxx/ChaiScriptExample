@@ -12,7 +12,8 @@ Trajectories are exported and can be visualized via the plot.py script.
 - Writing ChaiScript bindings for a simplistic scene class organized around EnTT
 - Splitting up ChaiScript compilation so as to optimize build times
 - Calling C++ functions from Chai
-- Calling Chai functions from C++
+- Calling ChaiScript functions from C++
+- Instantiating a ChaiScript object from C++
 
 ## Dependencies
 glm, EnTT and ChaiScript must be installed and in the path.

@@ -26,6 +26,7 @@ Scene::Scene()
         auto& cs = registry_.emplace<CScript>(e);
 
         cs.source = "../source/ballistics.chai";
+        cs.class_name = "Actor";
         chai_->use(cs.source);
     }
 
@@ -35,21 +36,22 @@ Scene::Scene()
     });
 }
 
-CTransform& Scene::get_transform(entt::entity e) { return registry_.get<CTransform>(e); }
-CRigid& Scene::get_rigid(entt::entity e) { return registry_.get<CRigid>(e); }
+CTransform& Scene::get_transform(int e) { return registry_.get<CTransform>(entt::entity(e)); }
+CRigid& Scene::get_rigid(int e) { return registry_.get<CRigid>(entt::entity(e)); }
 
 // Example of an entity system that handles script components
 void Scene::update(float dt)
 {
     t_ += dt;
     registry_.view<CScript, CTransform, CRigid>(/*entt::exclude<RemovedTag>*/)
-        .each([this, dt](auto e, const auto& /*cs*/, auto& ct, auto& cr) {
+        .each([this, dt](auto e, const auto& cs, auto& ct, auto& cr) {
             if(registry_.has<RemovedTag>(e)) // entt::exclude does not seem to work here
                 return;
 
-            // call script method
-            auto func = chai_->eval<std::function<void(entt::entity, float)>>("update");
-            func(e, dt);
+            // instantiate script object and call update method
+            auto obj = chai_->eval(cs.class_name + "(" + std::to_string(int(e)) + ")");
+            auto func = chai_->eval<std::function<void(chaiscript::Boxed_Value&, float)>>("__update");
+            func(obj, dt);
 
             // stop simulating entity if it went below y=0
             if(ct.position.y < 0.f)

@@ -26,6 +26,7 @@ struct CRigid
 struct CScript
 {
     std::string source;
+    std::string class_name;
 };
 
 namespace script

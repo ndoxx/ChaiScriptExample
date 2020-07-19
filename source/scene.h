@@ -27,8 +27,8 @@ class Scene
 public:
     Scene();
 
-    CTransform& get_transform(entt::entity e);
-    CRigid& get_rigid(entt::entity e);
+    CTransform& get_transform(int e);
+    CRigid& get_rigid(int e);
 
     inline entt::registry& get_registry() { return registry_; }
 
